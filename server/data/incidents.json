@@ -1,0 +1,6 @@
+[
+  { "id": "INC-101", "type": "medical", "location": "Section 214, Upper Tier", "severity": "medium", "status": "responding", "reportedMinAgo": 3 },
+  { "id": "INC-102", "type": "overcrowding", "location": "Gate A queue", "severity": "high", "status": "open", "reportedMinAgo": 6 },
+  { "id": "INC-103", "type": "lost_child", "location": "Fan Zone, near Food Court 2", "severity": "high", "status": "open", "reportedMinAgo": 1 },
+  { "id": "INC-104", "type": "weather", "location": "Stadium-wide", "severity": "low", "status": "monitoring", "reportedMinAgo": 15 }
+]

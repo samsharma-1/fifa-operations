@@ -1,0 +1,15 @@
+{
+  "metro": [
+    { "line": "Red Line", "nearestStation": "Stadium Central", "etaMin": 4, "crowdLevel": "high" },
+    { "line": "Blue Line", "nearestStation": "West Concourse", "etaMin": 7, "crowdLevel": "medium" }
+  ],
+  "shuttle": [
+    { "route": "Shuttle 1 - Downtown", "etaMin": 6, "seatsAvailable": 12 },
+    { "route": "Shuttle 2 - Airport Express", "etaMin": 18, "seatsAvailable": 30 }
+  ],
+  "parking": [
+    { "lot": "Lot A", "spotsAvailable": 40, "walkToGate": "Gate A - 5 min" },
+    { "lot": "Lot D", "spotsAvailable": 210, "walkToGate": "Gate D - 8 min" }
+  ],
+  "rideshare": { "pickupZone": "Zone 3, near Gate B", "estimatedWaitMin": 10 }
+}

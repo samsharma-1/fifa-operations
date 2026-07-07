@@ -1,0 +1,5 @@
+[
+  { "id": "VOL-01", "name": "A. Sharma", "role": "Wayfinding Support", "zone": "Gate A", "shiftEnd": "18:30", "tasksOpen": 2 },
+  { "id": "VOL-02", "name": "L. Fernandez", "role": "Accessibility Support", "zone": "Gate D", "shiftEnd": "19:00", "tasksOpen": 0 },
+  { "id": "VOL-03", "name": "K. Osei", "role": "Fan Zone Support", "zone": "Fan Zone", "shiftEnd": "18:30", "tasksOpen": 3 }
+]

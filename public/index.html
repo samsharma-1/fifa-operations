@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stadium Copilot — FIFA World Cup 2026</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <div>
+      <p class="brand-title">Stadium Copilot</p>
+      <p class="brand-sub">FIFA World Cup 2026 · Host Venue Operations</p>
+    </div>
+  </div>
+  <nav class="role-tabs" role="tablist" aria-label="Choose your role">
+    <button class="role-tab" data-role="fan" role="tab" aria-selected="true">Fan</button>
+    <button class="role-tab" data-role="volunteer" role="tab" aria-selected="false">Volunteer</button>
+    <button class="role-tab" data-role="staff" role="tab" aria-selected="false">Staff</button>
+    <button class="role-tab" data-role="organizer" role="tab" aria-selected="false">Organizer</button>
+  </nav>
+</header>
+
+<main id="main" class="layout">
+
+  <section class="ring-panel" aria-label="Live gate map">
+    <h2 class="panel-title">Live Gate Map</h2>
+    <div class="ring-wrap">
+      <svg id="gateRing" viewBox="0 0 480 300" role="img" aria-labelledby="ringDesc">
+        <title id="ringDesc">Stadium pitch with gates positioned around it, colored by crowd status</title>
+        <ellipse cx="240" cy="150" rx="150" ry="80" class="pitch"></ellipse>
+        <line x1="240" y1="70" x2="240" y2="230" class="pitch-line"></line>
+        <ellipse cx="240" cy="150" rx="40" ry="24" class="pitch-line-outline"></ellipse>
+        <g id="gateMarkers"></g>
+      </svg>
+      <ul class="ring-legend">
+        <li><span class="dot dot-good"></span> Flowing well</li>
+        <li><span class="dot dot-watch"></span> Building queue</li>
+        <li><span class="dot dot-alert"></span> Needs action</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="widgets" aria-label="Role dashboard" id="widgets">
+    <!-- populated by app.js based on selected role -->
+  </section>
+
+  <section class="chat-panel" aria-label="Ask Stadium Copilot">
+    <h2 class="panel-title">Ask Stadium Copilot</h2>
+    <div class="chat-meta">
+      <label for="langSelect">Reply in</label>
+      <select id="langSelect">
+        <option value="English">English</option>
+        <option value="Spanish">Español</option>
+        <option value="Portuguese">Português</option>
+        <option value="French">Français</option>
+        <option value="Arabic">العربية</option>
+        <option value="Hindi">हिन्दी</option>
+      </select>
+    </div>
+    <div id="chatLog" class="chat-log" role="log" aria-live="polite"></div>
+    <form id="chatForm" class="chat-form">
+      <label class="sr-only" for="chatInput">Type your question</label>
+      <input id="chatInput" type="text" placeholder="Ask about gates, transport, tasks, incidents…" autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+    <div id="chatStatus" class="chat-status" aria-live="polite"></div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>Demo build for Smart Stadiums &amp; Tournament Operations · Data shown is simulated for demonstration.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

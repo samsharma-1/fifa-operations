@@ -1,0 +1,7 @@
+[
+  { "id": "GATE-A", "name": "Gate A - North", "capacityPerMin": 120, "currentFlowPerMin": 118, "queueLengthMin": 22, "accessible": true, "status": "open" },
+  { "id": "GATE-B", "name": "Gate B - East", "capacityPerMin": 100, "currentFlowPerMin": 40, "queueLengthMin": 3, "accessible": true, "status": "open" },
+  { "id": "GATE-C", "name": "Gate C - South", "capacityPerMin": 110, "currentFlowPerMin": 105, "queueLengthMin": 15, "accessible": false, "status": "open" },
+  { "id": "GATE-D", "name": "Gate D - West (Accessible Priority)", "capacityPerMin": 60, "currentFlowPerMin": 20, "queueLengthMin": 1, "accessible": true, "status": "open" },
+  { "id": "GATE-E", "name": "Gate E - VIP/Media", "capacityPerMin": 40, "currentFlowPerMin": 12, "queueLengthMin": 0, "accessible": true, "status": "open" }
+]

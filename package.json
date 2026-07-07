@@ -1,0 +1,20 @@
+{
+  "name": "smart-stadium-copilot",
+  "version": "1.0.0",
+  "description": "Unified GenAI assistant for FIFA World Cup 2026 stadium operations - one system, four roles (Fan, Volunteer, Staff, Organizer).",
+  "main": "server/index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test server/tests/decisionEngine.test.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "license": "MIT"
+}
