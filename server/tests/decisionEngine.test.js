@@ -9,6 +9,7 @@ const {
   recommendTransport,
   triageIncidents,
   findNearestVolunteer,
+  processCCTVFeed,
 } = require('../decisionEngine');
 
 const gatesFixture = [
@@ -92,4 +93,14 @@ test('findNearestVolunteer falls back to full pool if zone has no match', () => 
   ];
   const result = findNearestVolunteer(volunteersFixture, 'Nonexistent Zone');
   assert.equal(result.id, 'V1');
+});
+
+test('processCCTVFeed translates high occupancy to overcrowding incident', () => {
+  const mockCctv = [
+    { camera_id: 'CAM-X', zone: 'Test Zone', people_count: 100, occupancy_percent: 95, incident: 'High Crowd Density', severity: 'High', confidence: 0.9 }
+  ];
+  const { generatedIncidents } = processCCTVFeed(mockCctv);
+  assert.strictEqual(generatedIncidents.length, 1);
+  assert.strictEqual(generatedIncidents[0].type, 'overcrowding');
+  assert.strictEqual(generatedIncidents[0].severity, 'high');
 });

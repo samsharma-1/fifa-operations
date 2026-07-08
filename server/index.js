@@ -8,6 +8,7 @@ const gates = require('./data/gates.json');
 const transport = require('./data/transport.json');
 const incidents = require('./data/incidents.json');
 const volunteers = require('./data/volunteers.json');
+const cctvBase = require('./data/cctv.json');
 
 const {
   buildSnapshot,
@@ -17,7 +18,7 @@ const {
   findNearestVolunteer,
 } = require('./decisionEngine');
 const { getSystemPrompt } = require('./rolePrompts');
-const { callClaude } = require('./llmClient');
+const { callLLM } = require('./llmClient');
 
 const app = express();
 app.use(express.json());
@@ -41,6 +42,16 @@ function liveData() {
     transport,
     incidents,
     volunteers,
+    cctv: cctvBase.map((c) => {
+      // Simulate live jitter for camera feeds
+      const people = Math.max(0, c.people_count + Math.round((Math.random() - 0.5) * 20));
+      const occ = Math.max(0, Math.min(100, Math.round(c.occupancy_percent * (people / (c.people_count || 1)))));
+      return {
+        ...c,
+        people_count: people,
+        occupancy_percent: occ,
+      };
+    }),
   };
 }
 
@@ -98,12 +109,12 @@ app.post('/api/chat', validateRole, async (req, res) => {
     const systemPrompt = getSystemPrompt(role);
     const languageNote = language ? `\nRespond in: ${language}.` : '';
 
-    const reply = await callClaude({
+    const reply = await callLLM({
       systemPrompt: systemPrompt + languageNote,
       userMessage: message,
       contextJson: snapshot,
-      model: process.env.ANTHROPIC_MODEL,
-      apiKey: process.env.ANTHROPIC_API_KEY,
+      model: process.env.GEMINI_MODEL,
+      apiKey: process.env.GEMINI_API_KEY || process.env.ANTHROPIC_API_KEY,
     });
 
     res.json({ reply, snapshotUsed: snapshot.timestamp });

@@ -159,6 +159,22 @@ button:focus-visible, input:focus-visible, select:focus-visible, .role-tab:focus
 .gate-marker.status-watch circle { fill: var(--watch); }
 .gate-marker.status-alert circle { fill: var(--alert); }
 
+.cctv-marker rect {
+  stroke: #04121c;
+  stroke-width: 2;
+  transition: width 0.2s, height 0.2s;
+}
+.cctv-marker text {
+  font-family: var(--scoreboard);
+  font-size: 10px;
+  fill: #04121c;
+  font-weight: bold;
+  text-anchor: middle;
+}
+.cctv-marker.status-good rect { fill: var(--good); }
+.cctv-marker.status-watch rect { fill: var(--watch); }
+.cctv-marker.status-alert rect { fill: var(--alert); }
+
 .ring-legend {
   display: flex; gap: 16px; flex-wrap: wrap;
   list-style: none; padding: 0; margin: 0;

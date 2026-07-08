@@ -53,12 +53,15 @@ async function renderGateRing() {
   // Pull the full gate list via the staff snapshot (always includes gateStatus),
   // regardless of which role is currently selected - the ring is shared context.
   let gates = [];
+  let cctv = [];
   try {
     const ctxRes = await fetch(`/api/context/staff`);
     const ctx = await ctxRes.json();
     gates = ctx.gateStatus || [];
+    cctv = ctx.cctvIntelligence || [];
   } catch (e) {
     gates = [];
+    cctv = [];
   }
 
   gateMarkersEl.innerHTML = '';
@@ -89,6 +92,42 @@ async function renderGateRing() {
 
     const titleEl = document.createElementNS('http://www.w3.org/2000/svg', 'title');
     titleEl.textContent = `${g.name}: ${loadPercent}% load, ${g.queueLengthMin} min queue`;
+    group.appendChild(titleEl);
+
+    gateMarkersEl.appendChild(group);
+  });
+
+  // Plot CCTV cameras
+  cctv.forEach((c, i) => {
+    let x, y;
+    if (c.zone.includes('Gate A')) { x = 240; y = 30; }
+    else if (c.zone.includes('Concourse')) { x = 240; y = 150; }
+    else if (c.zone.includes('Food Court')) { x = 160; y = 150; }
+    else if (c.zone.includes('Escalator')) { x = 320; y = 150; }
+    else if (c.zone.includes('Fan Zone')) { x = 240; y = 270; }
+    else { x = 240 + Math.cos(i) * 50; y = 150 + Math.sin(i) * 50; }
+
+    const cls = c.incident ? 'status-alert' : (c.occupancyPercent >= 75 ? 'status-watch' : 'status-good');
+
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.setAttribute('class', `cctv-marker ${cls}`);
+
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', x - 14);
+    rect.setAttribute('y', y - 9);
+    rect.setAttribute('width', 28);
+    rect.setAttribute('height', 18);
+    rect.setAttribute('rx', 4);
+    group.appendChild(rect);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', x);
+    label.setAttribute('y', y + 3);
+    label.textContent = c.id.replace('CAM-', 'C');
+    group.appendChild(label);
+
+    const titleEl = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+    titleEl.textContent = `CCTV ${c.id} (${c.zone}): ${c.occupancyPercent}% load${c.incident ? ` - ALERT: ${c.incident}` : ''}`;
     group.appendChild(titleEl);
 
     gateMarkersEl.appendChild(group);
@@ -201,6 +240,18 @@ function renderStaffWidgets(data) {
         .join('')}</ul>`
     )
   );
+
+  widgetsEl.appendChild(
+    card(
+      'Live CCTV Intelligence',
+      (data.cctvIntelligence || [])
+        .map(
+          (c) =>
+            `<p><strong>${c.zone} (${c.id})</strong>: ${c.peopleCount} people (${c.occupancyPercent}% load) ${c.incident ? `— ${severityBadge(c.severity)} <em>${c.incident}</em>` : ''}</p>`
+        )
+        .join('') || '<p>No CCTV data available.</p>'
+    )
+  );
 }
 
 function renderOrganizerWidgets(data) {
@@ -221,6 +272,15 @@ function renderOrganizerWidgets(data) {
         .slice(0, 5)
         .map((i) => `<p>${severityBadge(i.severity)} ${i.type.replace('_', ' ')} — ${i.location}</p>`)
         .join('') || '<p>No active incidents.</p>'
+    )
+  );
+
+  widgetsEl.appendChild(
+    card(
+      'Computer Vision Alerts',
+      (data.cctvAlerts || [])
+        .map((c) => `<p>${severityBadge(c.severity)} <strong>${c.incident}</strong> detected at ${c.zone} (${c.id})</p>`)
+        .join('') || '<p>No active AI alerts.</p>'
     )
   );
 }

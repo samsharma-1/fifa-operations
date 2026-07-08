@@ -117,17 +117,73 @@ function findNearestVolunteer(volunteers, zone) {
 }
 
 /**
+ * Process the CCTV feed to generate analytics and incidents
+ */
+function processCCTVFeed(cctvFeed) {
+  const generatedIncidents = [];
+  const cctvIntel = [];
+
+  if (!cctvFeed) return { cctvIntel, generatedIncidents };
+
+  cctvFeed.forEach((camera) => {
+    // Collect the basic intel
+    cctvIntel.push({
+      id: camera.camera_id,
+      zone: camera.zone,
+      peopleCount: camera.people_count,
+      occupancyPercent: camera.occupancy_percent,
+      incident: camera.incident,
+      severity: camera.severity,
+      confidence: camera.confidence,
+    });
+
+    // Translate CCTV incidents/anomalies into stadium incidents
+    if (camera.incident && camera.severity) {
+      // Create a simulated incident ID based on camera to avoid true randomness breaking tests
+      const incId = `CCTV-${camera.camera_id}`;
+      let type = 'security';
+      const incStr = camera.incident.toLowerCase();
+      if (incStr.includes('smoke') || incStr.includes('fire')) {
+        type = 'fire';
+      } else if (incStr.includes('fallen')) {
+        type = 'medical';
+      } else if (incStr.includes('crowd density') || camera.occupancy_percent >= 90) {
+        type = 'overcrowding';
+      } else if (incStr.includes('queue')) {
+        type = 'queue_delay';
+      }
+
+      generatedIncidents.push({
+        id: incId,
+        type: type,
+        location: camera.zone,
+        severity: camera.severity.toLowerCase(),
+        status: 'open',
+        reportedMinAgo: 0,
+        source: 'CCTV'
+      });
+    }
+  });
+
+  return { cctvIntel, generatedIncidents };
+}
+
+/**
  * Build a compact operational snapshot for a given role.
  * This is what gets fed to the LLM as grounding context, and also what
  * powers the dashboard widgets directly (no LLM call needed for the UI).
  */
 function buildSnapshot(role, data) {
-  const { gates, transport, incidents, volunteers } = data;
+  const { gates, transport, incidents, volunteers, cctv = [] } = data;
+  
+  const { cctvIntel, generatedIncidents } = processCCTVFeed(cctv);
+  const combinedIncidents = [...incidents, ...generatedIncidents];
+
   const base = {
     role,
     timestamp: new Date().toISOString(),
     crowdAlerts: getCrowdAlerts(gates),
-    incidents: triageIncidents(incidents).slice(0, 5),
+    incidents: triageIncidents(combinedIncidents).slice(0, 5),
   };
 
   switch (role) {
@@ -147,18 +203,20 @@ function buildSnapshot(role, data) {
       return {
         ...base,
         gateStatus: gates,
-        triagedIncidents: triageIncidents(incidents),
+        triagedIncidents: triageIncidents(combinedIncidents),
+        cctvIntelligence: cctvIntel,
       };
     case 'organizer':
       return {
         ...base,
         gateStatus: gates,
         transport,
-        triagedIncidents: triageIncidents(incidents),
+        triagedIncidents: triageIncidents(combinedIncidents),
         volunteers,
+        cctvAlerts: cctvIntel.filter(c => c.incident !== null),
         kpis: {
           gatesOverThreshold: getCrowdAlerts(gates).length,
-          openHighSeverityIncidents: incidents.filter((i) => i.severity === 'high' && i.status !== 'resolved').length,
+          openHighSeverityIncidents: combinedIncidents.filter((i) => i.severity === 'high' && i.status !== 'resolved').length,
           totalOpenVolunteerTasks: volunteers.reduce((sum, v) => sum + v.tasksOpen, 0),
         },
       };
@@ -173,6 +231,7 @@ module.exports = {
   recommendTransport,
   triageIncidents,
   findNearestVolunteer,
+  processCCTVFeed,
   buildSnapshot,
   CROWD_BUSY_THRESHOLD,
   QUEUE_ALERT_MIN,

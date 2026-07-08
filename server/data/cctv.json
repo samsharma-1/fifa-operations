@@ -1,0 +1,52 @@
+[
+  {
+    "camera_id": "CAM-01",
+    "zone": "Gate A",
+    "people_count": 520,
+    "queue_length": 15,
+    "occupancy_percent": 65,
+    "incident": null,
+    "severity": null,
+    "confidence": 0.98
+  },
+  {
+    "camera_id": "CAM-05",
+    "zone": "Main Concourse",
+    "people_count": 812,
+    "queue_length": 0,
+    "occupancy_percent": 92,
+    "incident": "High Crowd Density",
+    "severity": "High",
+    "confidence": 0.96
+  },
+  {
+    "camera_id": "CAM-06",
+    "zone": "Food Court",
+    "people_count": 150,
+    "queue_length": 25,
+    "occupancy_percent": 75,
+    "incident": "Long Queue",
+    "severity": "Medium",
+    "confidence": 0.91
+  },
+  {
+    "camera_id": "CAM-11",
+    "zone": "Escalator 2",
+    "people_count": 45,
+    "queue_length": 5,
+    "occupancy_percent": 40,
+    "incident": "Person fallen",
+    "severity": "High",
+    "confidence": 0.89
+  },
+  {
+    "camera_id": "CAM-14",
+    "zone": "Fan Zone",
+    "people_count": 300,
+    "queue_length": 0,
+    "occupancy_percent": 50,
+    "incident": null,
+    "severity": null,
+    "confidence": 0.94
+  }
+]
