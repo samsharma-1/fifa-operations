@@ -14,15 +14,22 @@ const chatInputEl = document.getElementById('chatInput');
 const chatStatusEl = document.getElementById('chatStatus');
 const langSelectEl = document.getElementById('langSelect');
 
-roleTabs.forEach((tab) => {
-  tab.addEventListener('click', () => setRole(tab.dataset.role));
-});
+const loginFormEl = document.getElementById('loginForm');
+const loginIdInputEl = document.getElementById('loginIdInput');
+const loginErrorEl = document.getElementById('loginError');
+const loginOverlayEl = document.getElementById('loginOverlay');
+const mainEl = document.getElementById('main');
+const topbarEl = document.getElementById('topbar');
+const footerEl = document.getElementById('footer');
+const logoutBtn = document.getElementById('logoutBtn');
+let refreshInterval = null;
 
 function setRole(role) {
   state.role = role;
   roleTabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.role === role)));
+  renderGateRing();
   loadContext();
-  addSystemNote(`Switched to ${capitalize(role)} view. Ask me anything relevant to this role.`);
+  addSystemNote(`Logged in as ${capitalize(role)}. Ask me anything relevant to this role.`);
 }
 
 function capitalize(s) {
@@ -332,14 +339,49 @@ chatFormEl.addEventListener('submit', async (e) => {
 
 // --- Init -----------------------------------------------------------------
 
-renderGateRing();
-loadContext();
-addSystemNote(
-  'Welcome to Stadium Copilot. Pick a role above, then ask me about gates, transport, tasks, or incidents.'
-);
+loginFormEl.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const id = loginIdInputEl.value.trim().toUpperCase();
+  let detectedRole = '';
+  
+  if (id.startsWith('FAN-')) detectedRole = 'fan';
+  else if (id.startsWith('VOL-')) detectedRole = 'volunteer';
+  else if (id.startsWith('STAFF-') || id.startsWith('AUTH-')) detectedRole = 'staff';
+  else if (id.startsWith('ORG-')) detectedRole = 'organizer';
+  
+  if (detectedRole) {
+    loginErrorEl.classList.add('hidden');
+    loginOverlayEl.classList.add('hidden');
+    mainEl.classList.remove('hidden');
+    topbarEl.classList.remove('hidden');
+    footerEl.classList.remove('hidden');
+    
+    setRole(detectedRole);
+    
+    // Start periodic refresh
+    if (refreshInterval) clearInterval(refreshInterval);
+    refreshInterval = setInterval(() => {
+      renderGateRing();
+      loadContext();
+    }, 20000);
+  } else {
+    loginErrorEl.classList.remove('hidden');
+  }
+});
 
-// Refresh live data periodically to simulate real-time updates
-setInterval(() => {
-  renderGateRing();
-  loadContext();
-}, 20000);
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    if (refreshInterval) clearInterval(refreshInterval);
+    loginIdInputEl.value = '';
+    loginErrorEl.classList.add('hidden');
+    
+    // Hide dashboard, show login
+    loginOverlayEl.classList.remove('hidden');
+    mainEl.classList.add('hidden');
+    topbarEl.classList.add('hidden');
+    footerEl.classList.add('hidden');
+    
+    // Clear chat log
+    chatLogEl.innerHTML = '';
+  });
+}

@@ -8,9 +8,28 @@
 </head>
 <body>
 
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-box">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <p class="brand-title">Stadium Copilot</p>
+        <p class="brand-sub">FIFA World Cup 2026</p>
+      </div>
+    </div>
+    <h2>Sign In to Dashboard</h2>
+    <form id="loginForm">
+      <label for="loginIdInput" class="sr-only">Enter your ID</label>
+      <input type="text" id="loginIdInput" placeholder="Enter ID (e.g. FAN-123)" required autocomplete="off" />
+      <button type="submit" class="login-btn">Access Dashboard</button>
+      <p id="loginError" class="login-error hidden">Invalid ID format. Please use FAN-, VOL-, STAFF-, or ORG- prefix.</p>
+    </form>
+  </div>
+</div>
+
 <a class="skip-link" href="#main">Skip to main content</a>
 
-<header class="topbar">
+<header class="topbar hidden" id="topbar">
   <div class="brand">
     <span class="brand-mark" aria-hidden="true"></span>
     <div>
@@ -18,15 +37,18 @@
       <p class="brand-sub">FIFA World Cup 2026 · Host Venue Operations</p>
     </div>
   </div>
-  <nav class="role-tabs" role="tablist" aria-label="Choose your role">
-    <button class="role-tab" data-role="fan" role="tab" aria-selected="true">Fan</button>
-    <button class="role-tab" data-role="volunteer" role="tab" aria-selected="false">Volunteer</button>
-    <button class="role-tab" data-role="staff" role="tab" aria-selected="false">Staff</button>
-    <button class="role-tab" data-role="organizer" role="tab" aria-selected="false">Organizer</button>
-  </nav>
+  <div style="display: flex; gap: 16px; align-items: center;">
+    <nav class="role-tabs" role="tablist" aria-label="Choose your role">
+      <button class="role-tab" data-role="fan" role="tab" aria-selected="true">Fan</button>
+      <button class="role-tab" data-role="volunteer" role="tab" aria-selected="false">Volunteer</button>
+      <button class="role-tab" data-role="staff" role="tab" aria-selected="false">Staff</button>
+      <button class="role-tab" data-role="organizer" role="tab" aria-selected="false">Organizer</button>
+    </nav>
+    <button id="logoutBtn" class="logout-btn">Log out</button>
+  </div>
 </header>
 
-<main id="main" class="layout">
+<main id="main" class="layout hidden">
 
   <section class="ring-panel" aria-label="Live gate map">
     <h2 class="panel-title">Live Gate Map</h2>
@@ -74,7 +96,7 @@
 
 </main>
 
-<footer class="foot">
+<footer class="foot hidden" id="footer">
   <p>Demo build for Smart Stadiums &amp; Tournament Operations · Data shown is simulated for demonstration.</p>
 </footer>
 
